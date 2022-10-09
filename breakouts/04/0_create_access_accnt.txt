@@ -1,0 +1,13 @@
+
+Everyone needs an ACCESS account to access the Bridges-2
+supercomputer.  Go to 
+
+https://identity.access-ci.org/new-user
+
+and create an account. You should be able to "register with an
+existing identity" by using your UD credentials, typing and selecting
+"University of Delaware" from the long dropdown menu.
+
+Put your ACCESS user name in a plain text file named ACCESS and commit
+this file in the root of your personal Subversion repository. Nothing
+else goes in the file except your ACCESS user name.
