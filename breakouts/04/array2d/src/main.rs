@@ -1,12 +1,12 @@
 use std::env;
 use std::process::ExitCode;
 
-type Matrix = Box<Vec<Box<Vec<f64>>>>;
+type Matrix = Vec<Vec<f64>>;
 
 fn create_array(m: usize, n: usize) -> Matrix {
-    let mut mat: Matrix = Box::new(Vec::with_capacity(m));
+    let mut mat: Matrix =Vec::with_capacity(m);
     for _ in 0..m {
-        mat.push(Box::new(vec![0.0; n]));
+        mat.push(vec![0.0; n]);
     }
     mat
 }
