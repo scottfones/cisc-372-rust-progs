@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use std::fmt;
 
+use rand::prelude::*;
+
 type Deck = Vec<Card>;
 
 #[derive(Clone, Copy)]
@@ -22,7 +24,7 @@ impl fmt::Display for Suits {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Eq, PartialEq)]
 enum Values {
     Ace,
     Two,
@@ -100,7 +102,7 @@ fn make_deck() -> Deck {
 
         for s in 0..4 {
             let suit = suit_map.get(&s).unwrap().to_owned();
-            deck.push(Card { suit, value});
+            deck.push(Card { suit, value });
         }
     }
     deck
@@ -116,7 +118,46 @@ fn print_deck(deck: &Deck) {
     }
 }
 
+fn shuffle(deck: &mut Deck) {
+    let mut rng = thread_rng();
+    let distr = rand::distributions::Uniform::new_inclusive(0_usize, 51_usize);
+
+    for _ in 0..50 {
+        for i in 0..deck.len() {
+            let new_i = rng.sample(distr);
+            deck.swap(i, new_i);
+        }
+    }
+}
+
 fn main() {
-    let deck = make_deck();
+    let mut deck = make_deck();
     print_deck(&deck);
+    println!("\nWe be shufflin...shufflin...\n");
+    shuffle(&mut deck);
+    print_deck(&deck);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_deck_size() {
+        let deck = make_deck();
+        assert_eq!(deck.len(), 52);
+    }
+
+    #[test]
+    fn test_deck_order() {
+        let deck = make_deck();
+        for i in (0..52).step_by(4) {
+            assert!(
+                (deck[i].value == deck[i + 1].value) == (deck[i + 2].value == deck[i + 3].value),
+                "Comparing {} through {}",
+                deck[i],
+                deck[i + 3]
+            );
+        }
+    }
 }
