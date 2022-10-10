@@ -34,5 +34,7 @@ Write a function `destroy_deck` which destroys a deck.
 Write a `main` function which creates a deck, prints it, shuffles it,
 prints it again, and destroys it.
 
+### tests
+
 Write a Makefile to compile, test, and clean.
 
