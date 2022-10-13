@@ -6,11 +6,11 @@ fn main() {
     let world = universe.world();
     let nprocs = world.size();
     let rank = world.rank();
+    let start_time = mpi::time();
 
     let stop = 10_i32.pow(9);
     let step: usize = usize::try_from(nprocs).unwrap();
     let mut local_sum = 0_u64;
-    let start_time = mpi::time();
     for i in (rank..=stop).step_by(step) {
         local_sum += u64::try_from(i).unwrap();
     }
