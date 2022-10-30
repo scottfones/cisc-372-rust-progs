@@ -1,5 +1,4 @@
-use color_eyre::eyre::{eyre, Result};
-use color_eyre::Help;
+use color_eyre::eyre::Result;
 use mpi::traits::*;
 use rand::prelude::*;
 
@@ -12,19 +11,7 @@ fn main() -> Result<()> {
     let rank = world.rank();
 
     let root_rank = 3;
-    if nprocs < root_rank + 1 {
-        return Err(eyre!(
-            "Size of MPI_COMM_WORLD must be at least {}, but is {nprocs}!",
-            root_rank + 1
-        )
-        .with_suggestion(|| {
-            format!(
-                "Increase `-n` value from {} to {}",
-                nprocs,
-                root_rank + 1
-            )
-        }));
-    }
+    assert!(nprocs > root_rank);
 
     let r_val: i32 = thread_rng().gen_range(1..100);
 

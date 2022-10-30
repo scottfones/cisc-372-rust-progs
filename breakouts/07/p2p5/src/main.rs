@@ -1,7 +1,6 @@
 use std::env;
 
-use color_eyre::eyre::{eyre, Result};
-use color_eyre::Help;
+use color_eyre::eyre::Result;
 use mpi::traits::*;
 
 fn main() -> Result<()> {
@@ -12,12 +11,7 @@ fn main() -> Result<()> {
     let nprocs = world.size();
     let rank = world.rank();
 
-    if nprocs < 2 {
-        return Err(
-            eyre!("Size of MPI_COMM_WORLD must be at least 2, but is {nprocs}!",)
-                .with_suggestion(|| format!("Increase `-n` value from {} to {}", nprocs, 2)),
-        );
-    }
+    assert!(nprocs > 1);
 
     if rank == 0 {
         let args: Vec<i32> = env::args()
