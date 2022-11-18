@@ -1,9 +1,6 @@
-use std::fs::File;
-use std::io::Write;
 use std::time::Instant;
 
-use plotters::coord::Shift;
-use plotters::prelude::*;
+use heatmap_anim::*;
 
 const M: f64 = 100.0; // initial temperature of rod interior 
 const N: usize = 1500; // number of discrete points including endpoints
@@ -38,40 +35,8 @@ fn update(w: &mut [f64; N], w_new: &mut [f64; N]) {
     std::mem::swap(w, w_new);
 }
 
-fn draw_heatmap(
-    canvas: &DrawingArea<BitMapBackend, Shift>,
-    w: &u32,
-    h: &u32,
-    u: &[f64; N],
-) -> Result<(), Box<dyn std::error::Error>> {
-    // loop invarient conversions for gif
-    let width = *w as f64;
-    let height = *h as i32;
-    let slice_x_ratio = width / N as f64;
-    let slice_width = slice_x_ratio.recip() as i32;
-
-    for idx in 0..N {
-        let i = idx as f64;
-        let slice_x = (i * slice_x_ratio) as i32;
-        let red = (u[idx] / M * 255.0) as u8;
-        let c = RGBColor(red, 0, 255 - red);
-
-        for x in slice_x..=(slice_x + slice_width) {
-            for y in 0..=height {
-                canvas.draw_pixel((x, y), &c)?;
-            }
-        }
-    }
-    canvas.present()?;
-    Ok(())
-}
-
-fn main() -> std::io::Result<()> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let start_time = Instant::now();
-    let mut f_out = File::options()
-        .append(true)
-        .create(true)
-        .open("advect_values.csv")?;
 
     let mut u = [0.0_f64; N];
     let mut u_new = [0.0_f64; N];
@@ -79,23 +44,21 @@ fn main() -> std::io::Result<()> {
 
     let w: u32 = 1500;
     let h: u32 = 100;
-    let canvas = BitMapBackend::gif("advect_anim.gif", (w, h), 50)
-        .unwrap()
-        .into_drawing_area();
+    let gif_canvas = heatmap_anim::create_canvas("advect_anim.gif", w, h, M);
 
-    draw_heatmap(&canvas, &w, &h, &u).unwrap();
+    save_frame(&gif_canvas, &u)?;
 
     for i in 1..=NSTEP {
         update(&mut u, &mut u_new);
         if (i as f64) % WSTEP == 0.0 {
-            draw_heatmap(&canvas, &w, &h, &u).unwrap();
+            save_frame(&gif_canvas, &u)?;
         }
     }
 
     // writeln!(f_out, "{u:?}")?;
     let stop_time = start_time.elapsed().as_secs_f32();
     println!("Done in {stop_time} seconds");
-    draw_heatmap(&canvas, &w, &h, &u).unwrap();
+    save_frame(&gif_canvas, &u)?;
 
     Ok(())
 }
