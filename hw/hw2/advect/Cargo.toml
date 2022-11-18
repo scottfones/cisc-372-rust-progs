@@ -10,5 +10,5 @@ plotters = "0.3.4"
 
 [lib]
 name = "heatmap_anim"
-path = "src/lib.rs"
+path = "../../../libs/libheatmap_anim.rs"
 
