@@ -1,6 +1,5 @@
-use std::time::Instant;
-
 use heatmap_anim::*;
+use indicatif::{ProgressBar, ProgressStyle};
 
 const M: f64 = 100.0; // initial temperature of rod interior 
 const N: usize = 1500; // number of discrete points including endpoints
@@ -36,7 +35,12 @@ fn update(w: &mut [f64; N], w_new: &mut [f64; N]) {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let start_time = Instant::now();
+    let pb = ProgressBar::new(NSTEP as u64);
+    pb.set_style(ProgressStyle::with_template(
+        "{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] {pos:>7}/{len:7} ({msg:>6})"
+    )
+        .unwrap()
+        .progress_chars("#>-"));
 
     let mut u = [0.0_f64; N];
     let mut u_new = [0.0_f64; N];
@@ -52,13 +56,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         update(&mut u, &mut u_new);
         if (i as f64) % WSTEP == 0.0 {
             save_frame(&gif_canvas, &u)?;
+            pb.set_message(format!("{:3.2}", (i as f64) / (NSTEP as f64) * 100.0));
+            pb.inc(WSTEP as u64);
         }
     }
 
-    // writeln!(f_out, "{u:?}")?;
-    let stop_time = start_time.elapsed().as_secs_f32();
-    println!("Done in {stop_time} seconds");
     save_frame(&gif_canvas, &u)?;
+    pb.finish();
 
     Ok(())
 }

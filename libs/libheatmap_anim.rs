@@ -37,7 +37,7 @@ pub fn save_frame<const N: usize>(
 ) -> Result<(), Box<dyn Error>> {
     if gif_canvas.width as usize != data.len() {
         return Err(Box::new(DataLengthError(
-            "canvas and data must be equal length".into(),
+            "canvas width and data lengh must be equal".into(),
         )));
     }
 
