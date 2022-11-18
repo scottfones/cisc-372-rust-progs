@@ -2,17 +2,17 @@ use std::fs::File;
 use std::io::Write;
 use std::time::Instant;
 
-use plotly::layout::{Axis, Margin};
-use plotly::{HeatMap, Layout, Plot};
+use plotters::coord::Shift;
+use plotters::prelude::*;
 
 const M: f64 = 100.0; // initial temperature of rod interior 
 const N: usize = 1500; // number of discrete points including endpoints
-const H0: usize = N / 4; // Left endpoint of the heatsource 
-const H1: usize = 3 * N / 4; // Right endpoint of heat source
-const C: f64 = 0.001; // Advect constant 
-const K: f64 = 0.05; // Ddt/(dx*dx), diffusivity constant
-const NSTEP: i32 = 4_000_000; // Number of time steps
-const WSTEP: f64 = 8_000.0; // Time between animation update
+const H0: usize = N / 4; // left endpoint of the heatsource 
+const H1: usize = 3 * N / 4; // right endpoint of heat source
+const C: f64 = 0.001; // advect constant 
+const K: f64 = 0.05; // ddt/(dx*dx), diffusivity constant
+const NSTEP: i32 = 4_000_000; // number of time steps
+const WSTEP: f64 = 8_000.0; // time between animation update
 
 fn setup(v: &mut [f64; N], v_new: &mut [f64; N]) {
     for i in H0..H1 {
@@ -38,31 +38,32 @@ fn update(w: &mut [f64; N], w_new: &mut [f64; N]) {
     std::mem::swap(w, w_new);
 }
 
-fn draw_heatmap(z0: &[f64; N]) {
-    let z = z0.to_vec();
-    let z_n: i32 = z.len().try_into().unwrap();
-    let x: Vec<i32> = (1..z_n).collect();
-    let y: Vec<i32> = vec![0; z.len()];
-    let trace = HeatMap::new(x, y, z).zmax(100.0).zmin(0.0);
+fn draw_heatmap(
+    canvas: &DrawingArea<BitMapBackend, Shift>,
+    w: &u32,
+    h: &u32,
+    u: &[f64; N],
+) -> Result<(), Box<dyn std::error::Error>> {
+    // loop invarient conversions for gif
+    let width = *w as f64;
+    let height = *h as i32;
+    let slice_x_ratio = width / N as f64;
+    let slice_width = slice_x_ratio.recip() as i32;
 
-    let x_axis = Axis::new().tick_values(vec![]);
-    let y_axis = Axis::new().tick_values(vec![]);
-    let c_layout = Layout::new()
-        .width(1200)
-        .height(400)
-        .x_axis(x_axis)
-        .y_axis(y_axis)
-        // .title(Title::new("Advection: 1D Heatmap"))
-        .margin(Margin::new().left(0).right(0).top(0).bottom(0));
-    // .plot_background_color(NamedColor::Black)
-    // .paper_background_color(NamedColor::Black);
+    for idx in 0..N {
+        let i = idx as f64;
+        let slice_x = (i * slice_x_ratio) as i32;
+        let red = (u[idx] / M * 255.0) as u8;
+        let c = RGBColor(red, 0, 255 - red);
 
-    let mut plot = Plot::new();
-    plot.add_trace(trace);
-    plot.set_layout(c_layout);
-
-    // plot.save("a1d_0.png", ImageFormat::PNG,  400, 100, 1.0);
-    plot.show();
+        for x in slice_x..=(slice_x + slice_width) {
+            for y in 0..=height {
+                canvas.draw_pixel((x, y), &c)?;
+            }
+        }
+    }
+    canvas.present()?;
+    Ok(())
 }
 
 fn main() -> std::io::Result<()> {
@@ -75,22 +76,26 @@ fn main() -> std::io::Result<()> {
     let mut u = [0.0_f64; N];
     let mut u_new = [0.0_f64; N];
     setup(&mut u, &mut u_new);
-    draw_heatmap(&u);
-    writeln!(f_out, "{u:?}")?;
+
+    let w: u32 = 1500;
+    let h: u32 = 100;
+    let canvas = BitMapBackend::gif("advect_anim.gif", (w, h), 50)
+        .unwrap()
+        .into_drawing_area();
+
+    draw_heatmap(&canvas, &w, &h, &u).unwrap();
 
     for i in 1..=NSTEP {
         update(&mut u, &mut u_new);
         if (i as f64) % WSTEP == 0.0 {
-            println!("{:.02}%", (i as f64) / (NSTEP as f64) * 100.0);
-            writeln!(f_out, "{u:?}")?;
-            // draw_heatmap(&u);
+            draw_heatmap(&canvas, &w, &h, &u).unwrap();
         }
     }
 
-    writeln!(f_out, "{u:?}")?;
+    // writeln!(f_out, "{u:?}")?;
     let stop_time = start_time.elapsed().as_secs_f32();
     println!("Done in {stop_time} seconds");
-    draw_heatmap(&u);
+    draw_heatmap(&canvas, &w, &h, &u).unwrap();
 
     Ok(())
 }
