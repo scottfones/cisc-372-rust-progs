@@ -37,7 +37,7 @@ fn update(w: &mut [f64; N], w_new: &mut [f64; N]) {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let pb = ProgressBar::new(NSTEP as u64);
     pb.set_style(ProgressStyle::with_template(
-        "{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] {pos:>7}/{len:7} ({msg:>6})"
+        "{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] {pos:>7}/{len:7} ({msg:>7})"
     )
         .unwrap()
         .progress_chars("#>-"));
@@ -56,7 +56,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         update(&mut u, &mut u_new);
         if (i as f64) % WSTEP == 0.0 {
             save_frame(&gif_canvas, &u)?;
-            pb.set_message(format!("{:3.2}", (i as f64) / (NSTEP as f64) * 100.0));
+            pb.set_message(format!("{:3.2}%", (i as f64) / (NSTEP as f64) * 100.0));
             pb.inc(WSTEP as u64);
         }
     }
