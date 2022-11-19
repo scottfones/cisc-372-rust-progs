@@ -1,6 +1,6 @@
 # Advect
 
-While this program is sequential, it is the foundation for several future assignments. Its corresponding library, [heatmap_anim](https://github.com/scottfones/cisc-372-rust-progs/blob/main/imgs/hw2_heatmap_anim.gif), is responsible for generating the output, an animated heat map.
+While this program is sequential, it is the foundation for several future assignments. Its corresponding library, [heatmap_anim](https://github.com/scottfones/cisc-372-rust-progs/tree/main/imgs/hw2_heatmap_anim.gif), is responsible for generating the output, an animated heat map.
 
 ## Summary
 
