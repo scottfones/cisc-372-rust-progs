@@ -26,12 +26,24 @@ impl<'a> GifCanvas<'a> {
     }
 }
 
+pub enum DataDim<'b, const N: usize> {
+    ONE(&'b [f64; N]),
+    TWO(&'b [[f64; N]; N]),
+}
+
 /// Returns a GifCanvas
 pub fn create_canvas(filename: &str, width: u32, height: u32, max_temp: f64) -> GifCanvas {
     GifCanvas::new(filename, width, height, max_temp)
 }
 
-pub fn save_frame<const N: usize>(
+pub fn save_frame<const N: usize>(gif_canvas: &GifCanvas, data_dim: DataDim<N>) -> Result<(), Box<dyn Error>> {
+    match data_dim {
+        DataDim::ONE(data) => save_frame_1d(gif_canvas, data),
+        DataDim::TWO(_) => todo!(),
+    }
+}
+
+fn save_frame_1d<const N: usize>(
     gif_canvas: &GifCanvas,
     data: &[f64; N],
 ) -> Result<(), Box<dyn Error>> {
