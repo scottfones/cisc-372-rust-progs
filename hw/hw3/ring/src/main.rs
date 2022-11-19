@@ -14,8 +14,8 @@ fn print_msg(is_send: bool, msg: &[u8; 5], rank: i32) {
     let intro_opt = if is_send { "has" } else { "received" };
     let intro = format!("Process {rank} {intro_opt}");
     println!(
-        "{intro:<20}: {:>3}  {:>3}  {:>3}  {:>3}  {:>3}",
-        msg[0], msg[1], msg[2], msg[3], msg[4]
+        "{intro:<20}: {:>width$} {:>width$} {:>width$} {:>width$} {:>width$}",
+        msg[0], msg[1], msg[2], msg[3], msg[4], width = 5
     );
 }
 
