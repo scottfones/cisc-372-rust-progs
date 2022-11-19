@@ -1,4 +1,4 @@
-# Advect
+# HW2: Advect
 
 While this program is sequential, it is the foundation for several future assignments. Its corresponding library, [heatmap_anim](../../../libs/heatmap_anim/), is responsible for generating the output, an animated heat map.
 
