@@ -1,4 +1,4 @@
-use heatmap_anim::{DataDim, *};
+use heatmap_anim::{DataDim, GifCanvas, save_frame};
 use indicatif::{ProgressBar, ProgressStyle};
 
 const M: f64 = 100.0; // initial temperature of rod interior 
@@ -48,7 +48,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let w = N as u32;
     let h: u32 = 128;
-    let gif_canvas = heatmap_anim::create_canvas("advect_anim.gif", w, h, M);
+    let gif_canvas = GifCanvas::new("advect_anim.gif", w, h, M);
 
     save_frame(&gif_canvas, DataDim::ONE(&u))?;
 
