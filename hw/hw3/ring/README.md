@@ -2,7 +2,7 @@
 
 ## Summary
 
-Using MPI, each process generates five random ints, `u8`. Each process then prints a message describing their generated values (e.x. `Process 3 has: 4 100 87 45 4`).
+Using MPI, each process generates five random ints, `u8`. Each process then prints a message describing their generated values (e.g. `Process 3 has: 4 100 87 45 4`).
 
 Each process then sends their generated values to the process one rank higher, with the highest rank process sending to the lowest. Then each process prints their received values, similar to before.
 
