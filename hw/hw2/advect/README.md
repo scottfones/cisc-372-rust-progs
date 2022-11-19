@@ -1,6 +1,6 @@
 # Advect
 
-While this program is sequential, it is the foundation for several future assignments. Its corresponding library, [heatmap_anim](../../../imgs/hw2_advect_anim.gif), is responsible for generating the output, an animated heat map.
+While this program is sequential, it is the foundation for several future assignments. Its corresponding library, [heatmap_anim](../../../libs/heatmap_anim/), is responsible for generating the output, an animated heat map.
 
 ## Summary
 
@@ -23,7 +23,7 @@ cargo run --release
 
 Output:
 
-![animated heat map](https://github.com/scottfones/cisc-372-rust-progs/imgs/hw2_advect_anim.gif)
+![animated heat map](../../../imgs/hw2_advect_anim.gif)
 
 (Optional) To convert the gif to a video:
 ```bash
