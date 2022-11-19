@@ -1,4 +1,4 @@
-use heatmap_anim::{DataDim, GifCanvas, save_frame};
+use heatmap_anim::{save_frame, DataDim, GifCanvas};
 use indicatif::{ProgressBar, ProgressStyle};
 
 const M: f64 = 100.0; // initial temperature of rod interior 

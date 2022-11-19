@@ -31,7 +31,10 @@ pub enum DataDim<'b, const N: usize> {
     TWO(&'b [[f64; N]; N]),
 }
 
-pub fn save_frame<const N: usize>(gif_canvas: &GifCanvas, data_dim: DataDim<N>) -> Result<(), Box<dyn Error>> {
+pub fn save_frame<const N: usize>(
+    gif_canvas: &GifCanvas,
+    data_dim: DataDim<N>,
+) -> Result<(), Box<dyn Error>> {
     match data_dim {
         DataDim::ONE(data) => save_frame_1d(gif_canvas, data),
         DataDim::TWO(_) => todo!(),
