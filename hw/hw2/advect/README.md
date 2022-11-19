@@ -12,3 +12,20 @@ where:
 
 - $k$ is a diffusion constant
 - $c$ is an advection constant
+
+## Commands
+
+To run:
+
+```bash
+cargo run --release
+```
+
+Output:
+
+![animated heat map](https://github.com/scottfones/cisc-372-rust-progs/imgs/hw2_advect_anim.gif)
+
+(Optional) To convert the gif to a video:
+```bash
+sh ./gif_to_webm.sh
+```
