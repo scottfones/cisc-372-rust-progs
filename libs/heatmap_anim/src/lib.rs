@@ -12,7 +12,7 @@ pub struct GifCanvas<'a> {
 }
 
 impl<'a> GifCanvas<'a> {
-    fn new(filename: &str, width: u32, height: u32, max_temp: f64) -> Self {
+    pub fn new(filename: &str, width: u32, height: u32, max_temp: f64) -> Self {
         let canvas = BitMapBackend::gif(filename, (width, height), 50)
             .unwrap()
             .into_drawing_area();
@@ -29,11 +29,6 @@ impl<'a> GifCanvas<'a> {
 pub enum DataDim<'b, const N: usize> {
     ONE(&'b [f64; N]),
     TWO(&'b [[f64; N]; N]),
-}
-
-/// Returns a GifCanvas
-pub fn create_canvas(filename: &str, width: u32, height: u32, max_temp: f64) -> GifCanvas {
-    GifCanvas::new(filename, width, height, max_temp)
 }
 
 pub fn save_frame<const N: usize>(gif_canvas: &GifCanvas, data_dim: DataDim<N>) -> Result<(), Box<dyn Error>> {
