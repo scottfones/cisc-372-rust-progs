@@ -1,12 +1,9 @@
 [package]
-name = "advect"
+name = "heatmap_anim"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-indicatif = "0.17"
-heatmap_anim = { path = "../../../libs/heatmap_anim"}
-
-
+plotters = "0.3"
