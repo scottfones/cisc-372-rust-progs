@@ -13,6 +13,8 @@ where:
 - $k$ is a diffusion constant
 - $c$ is an advection constant
 
+In this simulation, the middle 50% of the rod begins at 100 degrees while the surrounding rod is at 0 degrees.
+
 ## Commands
 
 To run:
