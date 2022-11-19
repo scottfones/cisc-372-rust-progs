@@ -46,7 +46,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut u_new = [0.0_f64; N];
     setup(&mut u, &mut u_new);
 
-    let w: u32 = 1500;
+    let w = N as u32;
     let h: u32 = 128;
     let gif_canvas = heatmap_anim::create_canvas("advect_anim.gif", w, h, M);
 
