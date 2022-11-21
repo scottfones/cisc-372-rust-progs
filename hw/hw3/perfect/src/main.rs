@@ -28,6 +28,7 @@ fn is_perfect(num: u32) -> bool {
 }
 
 fn main() {
+    let args: Vec<String> = env::args().collect();
     let universe = mpi::initialize().unwrap();
     let world = universe.world();
     let nprocs = world.size();
@@ -35,7 +36,6 @@ fn main() {
     let t_start = mpi::time();
     let root_rank = 0;
 
-    let args: Vec<String> = env::args().collect();
     if rank == root_rank && args.len() != 2 {
         panic!("Error: Program requires upper-bound argument");
     }
