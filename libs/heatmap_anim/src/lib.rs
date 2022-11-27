@@ -13,7 +13,7 @@ pub struct GifCanvas<'a> {
 
 impl<'a> GifCanvas<'a> {
     pub fn new(filename: &str, width: u32, height: u32, max_temp: f64) -> Self {
-        let canvas = BitMapBackend::gif(filename, (width, height), 50)
+        let canvas = BitMapBackend::gif(filename, (width, height), 10)
             .unwrap()
             .into_drawing_area();
 
@@ -76,7 +76,7 @@ fn save_frame_2d(gif_canvas: &GifCanvas, data: &[Vec<f64>]) -> Result<(), Box<dy
 
     for x in range_w {
         for y in gif_canvas.canvas.get_pixel_range().1 {
-            let red = (data[y as usize][x as usize] / gif_canvas.max_temp * 255.0) as u8;
+            let red = (data[x as usize][y as usize] / gif_canvas.max_temp * 255.0) as u8;
             let c = RGBColor(red, 0, 255 - red);
             gif_canvas.canvas.draw_pixel((x, y), &c)?;
         }
