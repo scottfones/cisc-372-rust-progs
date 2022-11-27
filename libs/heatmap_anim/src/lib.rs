@@ -13,7 +13,7 @@ pub struct GifCanvas<'a> {
 
 impl<'a> GifCanvas<'a> {
     pub fn new(filename: &str, width: u32, height: u32, max_temp: f64) -> Self {
-        let canvas = BitMapBackend::gif(filename, (width, height), 10)
+        let canvas = BitMapBackend::gif(filename, (width, height), 50)
             .unwrap()
             .into_drawing_area();
 
