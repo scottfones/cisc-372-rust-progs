@@ -28,7 +28,7 @@ impl<'a> GifCanvas<'a> {
 
 pub enum DataDim<'b, const N: usize> {
     ONE(&'b [f64; N]),
-    TWO(&'b [[f64; N]; N]),
+    TWO(&'b [Vec<f64>]),
 }
 
 pub fn save_frame<const N: usize>(
@@ -37,7 +37,7 @@ pub fn save_frame<const N: usize>(
 ) -> Result<(), Box<dyn Error>> {
     match data_dim {
         DataDim::ONE(data) => save_frame_1d(gif_canvas, data),
-        DataDim::TWO(_) => todo!(),
+        DataDim::TWO(data) => save_frame_2d(gif_canvas, data),
     }
 }
 
@@ -61,6 +61,27 @@ fn save_frame_1d<const N: usize>(
             gif_canvas.canvas.draw_pixel((x, y), &c)?;
         }
     }
+    gif_canvas.canvas.present()?;
+    Ok(())
+}
+
+fn save_frame_2d(gif_canvas: &GifCanvas, data: &[Vec<f64>]) -> Result<(), Box<dyn Error>> {
+    if gif_canvas.width as usize != data.len() {
+        return Err(Box::new(DataLengthError(
+            "canvas width and data lengh must be equal".into(),
+        )));
+    }
+
+    let range_w = gif_canvas.canvas.get_pixel_range().0;
+
+    for x in range_w {
+        for y in gif_canvas.canvas.get_pixel_range().1 {
+            let red = (data[y as usize][x as usize] / gif_canvas.max_temp * 255.0) as u8;
+            let c = RGBColor(red, 0, 255 - red);
+            gif_canvas.canvas.draw_pixel((x, y), &c)?;
+        }
+    }
+
     gif_canvas.canvas.present()?;
     Ok(())
 }
