@@ -1,3 +1,5 @@
+use std::io::{self, Write};
+
 use heatmap_anim::{save_frame, DataDim, GifCanvas};
 use mpi::datatype::PartitionMut;
 use mpi::topology::{Process, SystemCommunicator};
@@ -153,7 +155,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     if rank == ROOT_RANK {
-        println!("Progress:\n{:>6.2}%", 0.00);
+        print!("Progress:\n{:.0}%", 0.00);
+        io::stdout().flush().unwrap();
     }
 
     for i in 1..=NSTEP {
@@ -164,8 +167,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if (i as f64) % WSTEP == 0.0 {
             sync_n_save(&gif_canvas, rank, u.clone(), &n_local, &displs, &world)?;
 
-            if rank == ROOT_RANK {
-                println!("{:>6.2}%", i as f64 / NSTEP as f64 * 100.0);
+            if rank == ROOT_RANK && (i as f64) % (WSTEP * 8.0) == 0.0 {
+                print!(".");
+                io::stdout().flush().unwrap();
+
+            if (i as f64) % (WSTEP * 25.0) == 0.0 {
+                    print!("{}%", f64::trunc(i as f64 / NSTEP as f64 * 100.0));
+                    io::stdout().flush().unwrap();
+                }
             }
         }
     }
@@ -174,7 +183,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     sync_n_save(&gif_canvas, rank, u.clone(), &n_local, &displs, &world)?;
 
     if rank == ROOT_RANK {
-        println!("Done in {} seconds.", mpi::time() - t_start);
+        println!("100%\nDone in {} seconds.", mpi::time() - t_start);
     }
 
     Ok(())
