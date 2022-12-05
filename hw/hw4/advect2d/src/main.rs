@@ -6,13 +6,21 @@ use mpi::topology::{Process, SystemCommunicator};
 use mpi::traits::*;
 use mpi::{point_to_point as p2p, Count};
 
-/// Initial Conditions
-const M: f64 = 100.0; // initial temperature of rod interior 
-const N: usize = 800; // number of discrete points including endpoints
+/// Original Config
+const N: usize = 200; // number of discrete points including endpoints
 const C: f64 = 0.01; // advect constant 
-const K: f64 = 0.05; // ddt/(dx*dx), diffusivity constant
-const NSTEP: i32 = 300_000; // number of time steps
+const K: f64 = 0.001; // ddt/(dx*dx), diffusivity constant
+const NSTEP: i32 = 200_000; // number of time steps
 const WSTEP: f64 = 400.0; // time between animation update
+
+/// Bridges2 Config
+// const N: usize = 800; // number of discrete points including endpoints
+// const C: f64 = 0.01; // advect constant 
+// const K: f64 = 0.05; // ddt/(dx*dx), diffusivity constant
+// const NSTEP: i32 = 300_000; // number of time steps
+// const WSTEP: f64 = 400.0; // time between animation update
+
+const M: f64 = 100.0; // initial temperature of rod interior 
 const H0: usize = N / 2 - N / 3; // initial hot zone start
 const H1: usize = N / 2 + N / 3; // initial hot zone stop
 
