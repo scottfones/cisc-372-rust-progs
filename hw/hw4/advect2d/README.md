@@ -21,7 +21,7 @@ cargo mpirun -n 6 --bin advect2d --release
 
 Output:
 
-![2d heatmap video](../../../imgs/hw4_advect2d_anim.webm)
+![2d heatmap video](../../../imgs/hw4_advect2d_anim.mp4)
 
 (Optional) To convert the gif to a video:
 ```bash
