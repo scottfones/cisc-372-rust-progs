@@ -4,6 +4,8 @@ use std::error::Error;
 use plotters::coord::Shift;
 use plotters::prelude::*;
 
+mod palettes_256;
+
 pub struct GifCanvas<'a> {
     canvas: DrawingArea<BitMapBackend<'a>, Shift>,
     width: u32,
@@ -45,45 +47,50 @@ fn save_frame_1d<const N: usize>(
     gif_canvas: &GifCanvas,
     data: &[f64; N],
 ) -> Result<(), Box<dyn Error>> {
-    if gif_canvas.width as usize != data.len() {
+    if (gif_canvas.width as usize) < data.len() {
         return Err(Box::new(DataLengthError(
-            "canvas width and data lengh must be equal".into(),
+            "canvas width should be at least as wide as the data".into(),
         )));
     }
+    let plot_slices = gif_canvas.canvas.split_evenly((1, gif_canvas.width as usize));
 
-    let range_w = gif_canvas.canvas.get_pixel_range().0;
-
-    for x in range_w {
-        let red = (data[x as usize] / gif_canvas.max_temp * 255.0) as u8;
-        let c = RGBColor(red, 0, 255 - red);
-
-        for y in gif_canvas.canvas.get_pixel_range().1 {
-            gif_canvas.canvas.draw_pixel((x, y), &c)?;
-        }
+    for (idx, slice) in plot_slices.iter().enumerate() {
+        let color_code = (data[idx] / gif_canvas.max_temp * 255.0) as usize;
+        slice.fill(&palettes_256::PaletteInferno256::pick(color_code))?;
     }
     gif_canvas.canvas.present()?;
     Ok(())
 }
 
 fn save_frame_2d(gif_canvas: &GifCanvas, data: &[Vec<f64>]) -> Result<(), Box<dyn Error>> {
-    if gif_canvas.width as usize != data.len() {
+    if (gif_canvas.width as usize) < data.len() {
         return Err(Box::new(DataLengthError(
-            "canvas width and data lengh must be equal".into(),
+            "canvas width should be at least as wide as the data".into(),
         )));
     }
 
-    let range_w = gif_canvas.canvas.get_pixel_range().0;
+    let plot_slices = gif_canvas.canvas.split_evenly((gif_canvas.width as usize, gif_canvas.width as usize));
 
-    for x in range_w {
-        for y in gif_canvas.canvas.get_pixel_range().1 {
-            let red = (data[x as usize][y as usize] / gif_canvas.max_temp * 255.0) as u8;
-            let c = RGBColor(red, 0, 255 - red);
-            gif_canvas.canvas.draw_pixel((x, y), &c)?;
+    for idx_x in 0..gif_canvas.width {
+        for idx_y in 0..gif_canvas.width {
+        let color_code = (data[idx_x as usize][idx_y as usize] / gif_canvas.max_temp * 255.0) as usize;
+        plot_slices[(idx_y * gif_canvas.width + idx_x) as usize].fill(&palettes_256::PaletteInferno256::pick(color_code))?;
         }
     }
-
     gif_canvas.canvas.present()?;
     Ok(())
+    // let range_w = gif_canvas.canvas.get_pixel_range().0;
+    //
+    // for x in range_w {
+    //     for y in gif_canvas.canvas.get_pixel_range().1 {
+    //         let red = (data[x as usize][y as usize] / gif_canvas.max_temp * 255.0) as u8;
+    //         let c = RGBColor(red, 0, 255 - red);
+    //         gif_canvas.canvas.draw_pixel((x, y), &c)?;
+    //     }
+    // }
+    //
+    // gif_canvas.canvas.present()?;
+    // Ok(())
 }
 
 #[derive(Debug)]
