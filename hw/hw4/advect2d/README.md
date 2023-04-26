@@ -23,9 +23,7 @@ Output:
 
 [hw4_advect2d_anim.webm](https://user-images.githubusercontent.com/17322143/234488525-9f08061f-536e-4a81-a5c0-7e21299c3942.webm)
 
-https://user-images.githubusercontent.com/17322143/234488608-f69e7d41-b2c1-44bf-9791-f78eaa65bdde.mp4
-
-![2d heatmap video](../../../imgs/hw4_advect2d_anim.mp4)
+[2d heatmap video](../../../imgs/hw4_advect2d_anim.webm)
 
 (Optional) To convert the gif to a video:
 ```bash
