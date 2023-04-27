@@ -4,7 +4,7 @@
 
 This program simulates the diffusion and advection of heat through a two-dimensional metal sheet with cyclic boundary conditions. Given a discretized model of the sheet as an array $u$ of length $n$, we define $u'$ with values at the next time step according to,
 
-''' 
+```rust
 u_new[i][j] = u[i][j]
     + K * (u[(i + 1) % N][j]
          + u[(i + N - 1) % N][j]
@@ -15,7 +15,7 @@ u_new[i][j] = u[i][j]
         - u[(i + N - 1) % N][j]
         + u[i][(j + 1) % N]
         - u[i][(j + N - 1) % N]);
-'''
+```
 
 where:
 
