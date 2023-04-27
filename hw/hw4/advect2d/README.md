@@ -2,12 +2,25 @@
 
 ## Summary
 
-This program simulates the diffusion and advection of heat through a two-dimensional metal sheet with cyclic boundary conditions. Given a discretized model of the rod as an array $u$ of length $n$, we define $u'$ with values at the next time step according to,
+This program simulates the diffusion and advection of heat through a two-dimensional metal sheet with cyclic boundary conditions. Given a discretized model of the sheet as an array $u$ of length $n$, we define $u'$ with values at the next time step according to,
+
+''' 
+u_new[i][j] = u[i][j]
+    + K * (u[(i + 1) % N][j]
+         + u[(i + N - 1) % N][j]
+         + u[i][(j + 1) % N]
+         + u[i][(j + N - 1) % N]
+         - 4.0 * u[i][j])
+   - C * (u[(i + 1) % N][j] 
+        - u[(i + N - 1) % N][j]
+        + u[i][(j + 1) % N]
+        - u[i][(j + N - 1) % N]);
+'''
 
 where:
 
-- $k$ is a diffusion constant
-- $c$ is an advection constant
+- $K$ is a diffusion constant
+- $C$ is an advection constant
 
 In this simulation, the middle two-thirds of the sheet begin at 100 degrees while the surrounding sheet is at 0 degrees.
 
@@ -22,8 +35,6 @@ cargo mpirun -n 6 --bin advect2d --release
 Output:
 
 [hw4_advect2d_anim.webm](https://user-images.githubusercontent.com/17322143/234488525-9f08061f-536e-4a81-a5c0-7e21299c3942.webm)
-
-[2d heatmap video](../../../imgs/hw4_advect2d_anim.webm)
 
 (Optional) To convert the gif to a video:
 ```bash
